@@ -1,0 +1,19 @@
+<html>
+<head>
+<title>
+Timeline Generation for Fluent Quantities
+</title>
+</head>
+<body>
+<h2>
+Timeline Generation for Fluent Quantities
+</h2>
+<p><a href="./timeline.pdf">Report</a></p>
+<h3>
+Abstract
+</h3>
+<p>
+Today, Information Retrieval seems to be moving in a new direction. Instead of the old scheme of returning a list of most relevant documents in response to queries, the focus is shifted to answering user’s information need is a structured manner so as to reduce the cognitive burden on a user as much as possible. Here we present QTQ, a system which generates a timeline in response to queries seeking fluent quantities. We use web pages as our data source, and the inherent noise presents a formidable challenge for information extraction. We propose a novel approach, which combines extractions from both free text and tables found on web pages. Instead of making hard extraction decisions, we keep at hand various alternative extractions with associated confidence scores, and use a consensus model to collectively score candidates. Our experiments clearly support the gains of using a collective model versus independent extractions. One of the main parts of the collective model is the temporal regression model, which models the distribution of values for each time epoch. Given the noisy nature of extractions from the web, we use a Kernel Density model for the task. Experiments on our dataset comprising of about 270 queries, show that the Kernel Density model outperforms the Gaussian Processes baseline by 11% for MAP and by 78% for average probability of the correct answer over all gold time values. The collective method outperforms the independent method by 20% for map and by 32% for probability of the correct answer.
+</p>
+</body>
+</html>
