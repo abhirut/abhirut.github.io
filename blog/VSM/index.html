@@ -95,6 +95,9 @@
  	<h2> Word2Vec </h2>
  		In their paper <i>Efficient Estimation of Word Representations in Vector Space</i>, Mikolov et. al. argue that the presence of hidden layers in Feed Forward Neural Net Language Models and Recurrent Neural Net Language Model leads to a large computational complexity which restricts the ability of these models to learn on large datasets. They introduce two models Continuous Bag of Words (CBOW) and Skipgram (both of which I talk about below) which do not contain any hidden layers, and show that by training these networks on large amount of data (billions of words) they are able to outperform existing models at semantic and syntactic similarity tasks.
  	<h3>CBOW and Skipgram</h3>
+ 	<div>
+ 		 <img src="./CBOW-SKIPGRAM.jpg"  width="60%" height="60%" alt="CBOW and Skipgram schematic"> 
+ 	</div>
  	<p>
  		Let \(c\) be a random word in the corpus. We can define a context as \(2C-1\) words (\(CW = \{w_{c-C}, w_{c-C-1}, .. , w_{c-1}, w{c+1}, .., w_{c+C}\}\)) around the word \(c\). Let's also define two vectors for each word \(w\) in the corpus - \(u_w\), the outside vector and \(v_w\), the inside vector. The main idea in both models is to learn vectors to maximize the likelihood of seeing a word in its given context. The objective differs slightly though. In Skipgram, the objective is to predict each of the context words given the center word \(w\). A log-linear model is used to predict the probability of a predicted word \(o\) which is given by -
  		\begin{align}
