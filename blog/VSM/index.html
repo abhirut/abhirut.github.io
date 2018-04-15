@@ -101,7 +101,7 @@
  	<p>
  		Let \(c\) be a random word in the corpus. We can define a context as \(2C-1\) words (\(CW = \{w_{c-C}, w_{c-C-1}, .. , w_{c-1}, w{c+1}, .., w_{c+C}\}\)) around the word \(c\). Let's also define two vectors for each word \(w\) in the corpus - \(u_w\), the outside vector and \(v_w\), the inside vector. The main idea in both models is to learn vectors to maximize the likelihood of seeing a word in its given context. The objective differs slightly though. In Skipgram, the objective is to predict each of the context words given the center word \(w\). A log-linear model is used to predict the probability of a predicted word \(o\) which is given by -
  		\begin{align}
- 			p(o|c) = \frac{exp(u_o^T v_c)}{\sum_{w=1}^{W}{u_w^T v_c}}
+ 			p(o|c) = \frac{exp(u_o^T v_c)}{\sum_{w=1}^{W}{exp(u_w^T v_c)}}
  		\end{align}
  		Where \(W\) is the set of all words in the corpus. Cross-entropy loss is used, and is summed up over all context words, and instances drawn from the dataset. Assuming \(y_j\) to be the one-hot representation of the correct word at the \(j^{th}\) context position, and \(\hat{y}_j\) to be the probabilities of all words calculated as above,
  		\begin{align}
