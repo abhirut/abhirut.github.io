@@ -1,0 +1,133 @@
+<html>
+<head>
+<basefont size="10">
+    <meta charset="utf-8">
+    <title>Abhirut Gupta</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="../../bootstrap/css/bootstrap.css" rel="stylesheet">
+    <style>
+      body {
+        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+      	padding-left: 300px;
+      	padding-right: 300px;
+      }
+    </style>
+    <link href="../../bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+	<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+	<script type="text/javascript">
+		MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [[ '$','$'], ["\\(","\\)"]],
+      displayMath:  [['$$','$$']],
+      processEscapes: true
+    },
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  		});
+	</script>
+</head>
+<body>
+
+<div class="navbar navbar-fixed-top">
+	<div class="navbar-inner">
+	<div class="container">
+		<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+		</a>
+		<a class="brand" href="../../index.html">Abhirut Gupta</a>
+		<ul class="nav">
+			<!--<li><a href="../index.html">Home</a></li>-->
+		</ul>
+		<div class="nav-collapse">
+		</div>
+	</div>
+	</div>
+</div>
+
+<div id="Content">
+	<h1>Vector Space Models</h1>
+	<p>15 April 2018</p>
+	<p>
+		Natural language is represented in discrete symbols called words. When put together in a given order (dictated by the language grammar) to produce phrases and sentences, they create meaning. Approaches to computational linguistics involve feeding representations of text into machine learning models to perform tasks like Part of Speech Tagging and Named Entity Recognition, eventually supporting complex applications like Information Retrieval or Dialogue Systems. While some of these tasks like Discourse Parsing are extremly complex, and remain largely unsolved, it turns out that there are challenges in even ceating these input representations for words, phrases, sentences and documents.
+	</p>
+	<p>
+		Machine learning models work on vectors as inputs. While such a representation is rather obvious for domains like vision, where the pixel values of an image can be the input vector for a model, it's not that straightforward for text. A common and rather simple way is to represent each word in a one-hot \(V\) dimensional vector (where \(V\) is the size of the vocabulary), and value at the current word's index is set to 1. Following is an example of such an encoding where \(V=10\), \(index(cat) = 2\), \(index(car) = 3\), and \(index(dog) = 9\)
+	</p>
+	\begin{align}
+		vector(cat) &= [0, 0, 1, 0, 0, 0, 0, 0, 0, 0] \\
+		vector(car) &= [0, 0, 0, 1, 0, 0, 0, 0, 0, 0] \\
+		vector(dog) &= [0, 0, 0, 0, 0, 0, 0, 0, 0, 1] \\
+	\end{align}
+	<p>
+		Representations for documents (or phrases) can be created in a similar way by assigning a value of 1 to all index positions of words that appear in the document. This is called the <a href="https://en.wikipedia.org/wiki/Bag-of-words_model">bag-of-words</a> representation, as it ignores the relative positions of words in the documents. Instead of storing '1' in positions of appearing words, we could also store values that are functions of the frequency of occurance and the importance of the word. <a href="https://en.wikipedia.org/wiki/Tf%E2%80%93idf">Tf-idf</a> is one such metric that combines importance of the word in the document (how frequently it occurs in the document), with the importance of words across documents (how frequently it occurs across documents - a common word would occur in almost all documents and is probably not that important).
+	</p>
+	<p>
+		An obvious drawback of representing words in a one-hot vector is the fact that all words are equidistant from each other in this space. In our example, \(dist(cat, dog)\) = \(dist(cat, car)\) = \(dist(car, dog)\). This is undesireable since we know that <i>cat</i> and <i>dog</i> should probably be more similar to each other (by virtue of being animals and living things), than both of them are to <i>car</i>. Thus, ideally we would like the ability to encode some "semantic" information in the vectors of words.
+ 	</p>
+ 	<p>
+ 		The distributional hypothesis, introducted by Zellig S. Harris, in his 1954 paper "Distributional structure" states that words that appear in similar contexts, tend to purport similar meanings. The idea that "a word is characterized by the company it keeps" was popularized by Firth. Therefore, if we could represent words, in terms of its "contexts", we would find that similar words had similar representations. The idea of of a "context" is vague and could be used to mean individual words in the neighbourhood, phrases, sentences or even documents. A term document matrix (\(X\)) is one where rows represent terms (or words), and the columns represent documents in a given corpus. The values of the matrix (\(X_{ij}\)) can be the co-occurance counts - number of times word \(w_i\) appears inside document \(d_j\), or some function like the tf-idf, or <a href="https://en.wikipedia.org/wiki/Pointwise_mutual_information">Pointwise Mutual Information (PMI)</a>. Peter D. Turney and Patrick Pantel, (2010) present a detailed survey of various Vector Space Models categorized by the type of matrix used (the choice of terms and contexts represented).
+ 	</p>
+ 	<p>
+ 		Such a matrix is usually very sparse, as most "discriminative words" would only appear in a few contexts (the property which makes them discriminative). Comparing two words requires comparing their scores in common contexts, but as most values of this matrix are 0, most words might not appear in any common contexts. What we want, ideally, is not just to compute word similarity by comparing their scores in the same contexts, but also use their scores in similar contexts. Truncated Singular Value Decomposition is one method that helps us achieve this. <a href="https://en.wikipedia.org/wiki/Singular-value_decomposition">Singular Value Decomposition (SVD)</a> decomposes an \(m \times n\) matrix \(X\) into the product of three matrices \(U\Sigma V^T\), where \(U\) and \(V\) are in column orthonormal form, and \(\Sigma\) is a diagonal matrix composed of the singular values of \(X\). We know that \(rank(\Sigma) = rank(X)\). In Truncated SVD, we take the top k singular values of \(X\) and the corresponding columns of \(U\) and \(V\), which in some sense denotes the "signal" of the matrix \(X\) leaving out the rest as noise.
+ 		\begin{align}
+			\hat{X} = U_k\Sigma_k V_k^{T}
+		\end{align}
+		It can be shown that \(\hat{X}\) is the best rank k approximation of the matrix X. i.e, \(\hat{X}\) minimizes \(\left|\left|{\hat{X}_k - X}\right|\right|_F\) over all matrices \(\hat{X}_k\) of rank k. The dense matrices \(U_k\) and \(V_k\), which have dimensions \(m\times k\) and \(n\times k\) respectively, can be thought of as the latent embeddings of the \(m\) rows and \(n\) columns of \(X\). Similarity between words \(w_i\) and \(w_j\) can be computed as the similarity between the \(i^{th}\) and \(j^{th}\) rows of \(U_k\). Also similarity between contexts \(c_i\) and \(c_j\) can be computed as the similarity between the \(i^{th}\) and \(j^{th}\) rows of \(V_k\).
+		A few alternate algorithms that one might also want to look at are -
+		<ul>
+			<li><a href="https://en.wikipedia.org/wiki/Non-negative_matrix_factorization">Non-negative Matrix Factorization</a></li>
+			<li><a href="https://en.wikipedia.org/wiki/Probabilistic_latent_semantic_analysis">Probabilistic Latent Semantic Indexing</a></li>
+			<li><a href="https://en.wikipedia.org/wiki/Kernel_principal_component_analysis">Kernel Principal Component Analysis</a></li>
+			<li><a href="https://en.wikipedia.org/wiki/Latent_Dirichlet_allocation">Latent Dirichlet Allocation</a></li>
+			<li><a href="https://arxiv.org/abs/math/0604410">Discrete Component Analysis</a></li>
+		</ul>
+ 	<p>
+ 	<p>
+ 		As cool as it is, it turns out however, that SVD has a few problems. The first is that SVD is a matrix operation, and there is no easy way to add a new document/context or word, without having to perform the whole operation again. Second, the computational cost - it scales quadratically for an \(m \times n\) matrix. While there are ways to speed up the operation, an easier way is to directly learn dense, low dimensional vectors for words (Bengio et. al. (2003), Mikolov et. al. (2013a), Mikolov et. al. (2013b), Pennington et. al. (2014)). Bengio et. al. (2003) train a <a href="https://en.wikipedia.org/wiki/Feedforward_neural_network">Feed Forward Neural Network</a> based Language Model (a <a href="https://en.wikipedia.org/wiki/Language_model">Language Model</a> is a probability distribution over a sequence of words). The task is to correctly predict the word immediately following a sequence of words (the length of the sequence is fixed). The words from the context are "projected" to a \({\rm I\!R}^{m}\) vector space with a matrix \(C \in {\rm I\!R}^{V\times m}\). These representations are then concatenated and then used as input to a feed-forward neural network to finally generate a distribution over all the vocabulary words. The learning consitutes of learning network weights as well as the matrix \(C\) which leads us to the word embeddings. An extension of the model is to use <a href="https://en.wikipedia.org/wiki/Recursive_neural_network">Recursive Neural Networks (RNNs)</a>, which remedies the problem of a fixed context size in the feed foward neural network.
+ 	</p>
+ 	<h2> Word2Vec </h2>
+ 		In their paper <i>Efficient Estimation of Word Representations in Vector Space</i>, Mikolov et. al. argue that the presence of hidden layers in Feed Forward Neural Net Language Models and Recurrent Neural Net Language Model leads to a large computational complexity which restricts the ability of these models to learn on large datasets. They introduce two models Continuous Bag of Words (CBOW) and Skipgram (both of which I talk about below) which do not contain any hidden layers, and show that by training these networks on large amount of data (billions of words) they are able to outperform existing models at semantic and syntactic similarity tasks.
+ 	<h3>CBOW and Skipgram</h3>
+ 	<p>
+ 		Let \(c\) be a random word in the corpus. We can define a context as \(2C-1\) words (\(CW = \{w_{c-C}, w_{c-C-1}, .. , w_{c-1}, w{c+1}, .., w_{c+C}\}\)) around the word \(c\). Let's also define two vectors for each word \(w\) in the corpus - \(u_w\), the outside vector and \(v_w\), the inside vector. The main idea in both models is to learn vectors to maximize the likelihood of seeing a word in its given context. The objective differs slightly though. In Skipgram, the objective is to predict each of the context words given the center word \(w\). A log-linear model is used to predict the probability of a predicted word \(o\) which is given by -
+ 		\begin{align}
+ 			p(o|c) = \frac{exp(u_o^T, v_c)}{\sum_{w=1}^{W}{u_w^T, v_c}}
+ 		\end{align}
+ 		Where \(W\) is the set of all words in the corpus. Cross-entropy loss is used, and is summed up over all context words, and instances drawn from the dataset. Assuming \(y_j\) to be the one-hot representation of the correct word at the \(j^{th}\) context position, and \(\hat{y}_j\) to be the probabilities of all words calculated as above,
+ 		\begin{align}
+ 			J = - \frac{1}{N} \sum_{i=1}^{N}{\sum_{\substack{-C\leq j \leq C
+ 												\\ j\neq 0}}^{}{ y_{{c_i}+j} \log{\hat{y}_{{c_i}+j}} }}
+ 		\end{align}
+		The parameters are the set of outside and inside vectors \(\theta = (\{u_w\},\{v_w\})\) for all words in the corpus.<br/>
+		The CBOW model predicts the central word \(c\) with all the context words as input. Define vector \(\hat{v}\) as,
+		 \begin{align}
+		 	\hat{v} = \sum_{\substack{-C\leq j \leq C
+ 												\\ j\neq 0}}^{}{v_{c+j}}
+		 \end{align}
+		\(\hat{v}\) is then used to predict the central word, using the outside vector of the central word \(u_c\), the rest of the formulation stays the same as before.
+  	</p>
+  	<p>
+  		One problem with the softmax formulation for the probability, is that we need to sum over <b>all</b> words in the denominator. When training over a corpus with billions of words, this can be costly. <a href="http://ruder.io/word-embeddings-softmax/">Heirarchical Softmax</a> is one technique that reduces the computation time to log of the number of words in the vocabulary. The alternate formulation used by Mikolov et. al. is Negative Sampling. The idea is to maximize the probability of the correct word, at the same time minimize the probability of \(K\) randomly sampled words. The cost function is defined as follows -
+  		\begin{align}
+  			J = - (\frac{1}{N} \sum_{i=1}^{N}{\sum_{\substack{-C\leq j \leq C
+ 												\\ j\neq 0}}^{}{ \log{\sigma{(u_{{c_i}+j}^{T}v_{c_i})}} + \sum_{k=1}^{K}{ \log{\sigma{(-u_{k}^{T}v_{c_i})}} }}})
+  		\end{align}
+  	</p>
+ 	<h2> GloVe </h2>
+	<h2>References</h2>
+	<p>Yoshua Bengio, Réjean Ducharme, Pascal Vincent, Christian Jauvin. 2003. A Neural Probabilistic Language Model. In <i>Journal of Machine Learning Research</i></p>
+	<p>Tomas Mikolov, Kai Chen, Greg Corrado, Jeffrey Dean. 2013. Efficient Estimation of Word Representations in Vector Space.</p>
+	<p>Tomas Mikolov, Ilya Sutskever, Kai Chen, Greg Corrado, Jeffrey Dean. 2013. Distributed Representations of Words and Phrases and their Compositionality. In <i>NIPS'13 Proceedings of the 26th International Conference on Neural Information Processing Systems - Volume 2</i></p>
+	<p>Jeffrey Pennington, Richard Socher, Christopher D. Manning. 2014. GloVe: Global Vectors for Word Representation. In <i>Empirical Methods in Natural Language Processing (EMNLP)</i></p>
+	<p>Peter D. Turney and Patrick Pantel. 2010. From Frequency to Meaning: Vector Space Models of Semantics. In <i>Journal of Artificial Intelligence Research </i> </p>
+
+</div>
+
+</body>
