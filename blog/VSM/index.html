@@ -119,8 +119,8 @@
   	<p>
   		One problem with the softmax formulation for the probability, is that we need to sum over <b>all</b> words in the denominator. When training over a corpus with billions of words, this can be costly. <a href="http://ruder.io/word-embeddings-softmax/">Heirarchical Softmax</a> is one technique that reduces the computation time to log of the number of words in the vocabulary. The alternate formulation used by Mikolov et. al. is Negative Sampling. The idea is to maximize the probability of the correct word, at the same time minimize the probability of \(K\) randomly sampled words. The cost function is defined as follows -
   		\begin{align}
-  			J = - (\frac{1}{N} \sum_{i=1}^{N}{\sum_{\substack{-C\leq j \leq C
- 												\\ j\neq 0}}^{}{ \log{\sigma{(u_{{c_i}+j}^{T}v_{c_i})}} + \sum_{k=1}^{K}{ \log{\sigma{(-u_{k}^{T}v_{c_i})}} }}})
+  			J = - \frac{1}{N} \sum_{i=1}^{N}{\sum_{\substack{-C\leq j \leq C
+ 												\\ j\neq 0}}^{}{( \log{\sigma{(u_{{c_i}+j}^{T}v_{c_i})}} + \sum_{k=1}^{K}{ \log{\sigma{(-u_{k}^{T}v_{c_i})}} })}}
   		\end{align}
   	</p>
  	<h2> GloVe </h2>
